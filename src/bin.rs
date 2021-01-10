@@ -1,9 +1,6 @@
 extern crate minifb;
 extern crate rodio;
 
-mod cpu;
-mod mmu;
-
 use minifb::{Key, Scale, Window, WindowOptions};
 use std::collections::HashSet;
 use std::fs::File;
@@ -12,6 +9,8 @@ use std::io::Read;
 use std::io::Write;
 use std::process;
 use structopt::StructOpt;
+
+use chipolata::{cpu, mmu};
 
 #[derive(StructOpt)]
 struct Cli {
