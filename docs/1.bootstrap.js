@@ -1,0 +1,27 @@
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[1],{
+
+/***/ "./helpers.js":
+/*!********************!*\
+  !*** ./helpers.js ***!
+  \********************/
+/*! exports provided: createAudio, createScreen, makeKeypad */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createAudio\", function() { return createAudio; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createScreen\", function() { return createScreen; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"makeKeypad\", function() { return makeKeypad; });\nconst makeOscillator = (audioContext) => {\n  const oscillator = audioContext.createOscillator();\n\n  oscillator.type = \"sine\";\n  oscillator.frequency.value = 400;\n  oscillator.connect(audioContext.destination);\n\n  return oscillator;\n};\n\nconst createAudio = () => {\n  if (!window.AudioContext && !window.webkitAudioContext) {\n    return null;\n  }\n\n  const audioContext = new (window.AudioContext || window.webkitAudioContext)();\n\n  return {\n    oscillator: null,\n\n    start() {\n      if (!this.oscillator) {\n        this.oscillator = makeOscillator(audioContext);\n        this.oscillator.start();\n      }\n    },\n\n    stop() {\n      if (this.oscillator) {\n        this.oscillator.stop();\n        this.oscillator = null;\n      }\n    },\n  };\n};\n\nconst makePixel = (context, color) => {\n  const pixel = context.createImageData(1, 1);\n\n  pixel.data[0] = color;\n  pixel.data[1] = color;\n  pixel.data[2] = color;\n  pixel.data[3] = 255;\n\n  return pixel;\n};\n\nconst createScreen = ($canvas, width, height) => {\n  $canvas.width = width;\n  $canvas.height = height;\n\n  const screen = $canvas.getContext(\"2d\");\n\n  const BLACK_PIXEL = makePixel(screen, 0);\n  const WHITE_PIXEL = makePixel(screen, 255);\n\n  return {\n    drawPixelAt(white, x, y) {\n      screen.putImageData(white ? WHITE_PIXEL : BLACK_PIXEL, x, y);\n    },\n  };\n};\n\nconst makeKeypad = (keysPressed) => {\n  return [\n    !!keysPressed[\"x\"], // 0\n    !!keysPressed[\"1\"], // 1\n    !!keysPressed[\"2\"], // 2\n    !!keysPressed[\"3\"], // 3\n    !!keysPressed[\"q\"], // 4\n    !!keysPressed[\"w\"], // 5\n    !!keysPressed[\"e\"], // 6\n    !!keysPressed[\"a\"], // 7\n    !!keysPressed[\"s\"], // 8\n    !!keysPressed[\"d\"], // 9\n    !!keysPressed[\"z\"], // A\n    !!keysPressed[\"c\"], // B\n    !!keysPressed[\"4\"], // C\n    !!keysPressed[\"r\"], // D\n    !!keysPressed[\"f\"], // E\n    !!keysPressed[\"v\"], // F\n  ];\n};\n\n\n//# sourceURL=webpack:///./helpers.js?");
+
+/***/ }),
+
+/***/ "./index.js":
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var chipolata__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chipolata */ \"./node_modules/chipolata/chipolata.js\");\n/* harmony import */ var chipolata_chipolata_bg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chipolata/chipolata_bg */ \"./node_modules/chipolata/chipolata_bg.wasm\");\n/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers */ \"./helpers.js\");\n\n\n\n\n// TODO: retrieve these values via the interpreter instance.\nconst WIDTH = 64;\nconst HEIGHT = 32;\n\n// TODO: add controls to mute sound\nconst audio = Object(_helpers__WEBPACK_IMPORTED_MODULE_2__[\"createAudio\"])();\n// TODO: add controls to change screen dimensions\nconst screen = Object(_helpers__WEBPACK_IMPORTED_MODULE_2__[\"createScreen\"])(document.getElementById(\"screen\"), WIDTH, HEIGHT);\n\nconst keysPressed = {};\n\ndocument.addEventListener(\"keydown\", (event) => {\n  keysPressed[event.key] = true;\n});\n\ndocument.addEventListener(\"keyup\", (event) => {\n  keysPressed[event.key] = false;\n});\n\n// TODO: make it configurable\nconst speed = 8;\n\nfetch(\"./space-invaders.ch8\").then(async (response) => {\n  const rom = await response.arrayBuffer();\n  const interpreter = new chipolata__WEBPACK_IMPORTED_MODULE_0__[\"Interpreter\"](new Uint8Array(rom));\n\n  const renderLoop = () => {\n    const keypad = Object(_helpers__WEBPACK_IMPORTED_MODULE_2__[\"makeKeypad\"])(keysPressed);\n\n    interpreter.tick(new Uint8Array(keypad), speed);\n\n    if (interpreter.should_redraw()) {\n      const framebuffer = new Uint8Array(\n        chipolata_chipolata_bg__WEBPACK_IMPORTED_MODULE_1__[\"memory\"].buffer,\n        interpreter.get_framebuffer_ptr(),\n        WIDTH * HEIGHT\n      );\n\n      for (let x = 0; x < WIDTH; x++) {\n        for (let y = 0; y < HEIGHT; y++) {\n          screen.drawPixelAt(framebuffer[x + y * WIDTH] == 1, x, y);\n        }\n      }\n    }\n\n    if (interpreter.should_beep()) {\n      audio.start();\n    } else {\n      audio.stop();\n    }\n\n    interpreter.update_timers();\n\n    requestAnimationFrame(renderLoop);\n  };\n\n  renderLoop();\n});\n\n\n//# sourceURL=webpack:///./index.js?");
+
+/***/ })
+
+}]);

@@ -1,7 +1,32 @@
 # chipolata
 
 This project is a [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) interpreter
-written in Rust.
+written in Rust. It can be compiled and run as a program or web application.
+
+## CLI
+
+```
+$ chipolata
+chipolata 1.0.0
+
+USAGE:
+    chipolata [FLAGS] [OPTIONS] <rom-name>
+
+FLAGS:
+    -d, --debug      Enable debug mode
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --speed <speed>     [default: 8]
+
+ARGS:
+    <rom-name>    The path to a ROM
+```
+
+## Web
+
+See: https://williamdurand.fr/chipolata/
 
 ## Links
 

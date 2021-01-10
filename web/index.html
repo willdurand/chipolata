@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>chipolata</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+    />
+    <style>
+      html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+
+      body {
+        background-color: #e3e3e3;
+
+      }
+
+      #screen {
+        image-rendering: optimizeSpeed;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-crisp-edges;
+        image-rendering: optimize-contrast;
+        -ms-interpolation-mode: nearest-neighbor;
+        width: 640px;
+        height: 320px;
+      }
+
+      .pure-g > div {
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .game-info {
+        margin: 1em auto;
+        max-width: 600px;
+        text-align: justify;
+      }
+
+      .main {
+        margin: 5% auto 5%;
+      }
+
+      div.help {
+        text-align: justify;
+      }
+
+      .footer {
+        font-size: 0.8em;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pure-g">
+      <div class="pure-u-1">
+        <h1>chipolata</h1>
+        <p>A CHIP-8 interpreter written in Rust.</p>
+      </div>
+    </div>
+    <div class="pure-g main">
+      <div class="pure-u-15-24">
+        <canvas id="screen"></canvas>
+        <p class="game-info">
+          This Space Invaders ROM (author: David Winter) comes from the "revival pack" that can be found
+          on the Internet (e.g. <a href="https://github.com/dmatlack/chip8/tree/master/roms">here</a>).
+        </p>
+      </div>
+      <div class="pure-u-8-24 help">
+        <h3>Help:</h3>
+        <p>
+          The CHIP-8 virtual machine requires a hex keyboard that has 16 keys
+          ranging from 0 to F, which isn't trendy these days. For this
+          interpreter, the 16 keys are remapped to those on the top left part
+          of a QWERTY keyboard:
+
+          <pre>
+          1 2 3 C      1 2 3 4
+          4 5 6 D  =>  Q W E R
+          7 8 9 E      A S D F
+          Z X C V      A 0 B F
+          </pre>
+        </p>
+        <p>
+          Start playing <strong>Space Invaders</strong> with <kbd>W<kbd>. Move to
+          the left with <kbd>Q</kbd> and to the right with <kbd>E</kbd>. Fire
+          with <kbd>W</kbd>.
+        </p>
+      </div>
+    </div>
+    <div class="pure-g">
+      <div class="pure-u-1 footer">
+        <p>
+          This project started as a "week-end project" by
+          <a href="https://twitter.com/couac">@couac</a>. The source code is
+          available on
+          <a href="https://github.com/willdurand/chipolata">GitHub</a> (MIT
+          license).
+        </p>
+      </div>
+    </div>
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>

@@ -12,3 +12,5 @@ Cargo.lock
 
 # chipolata
 roms/
+web/node_modules/
+*.ch8

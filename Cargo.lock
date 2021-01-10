@@ -194,10 +194,14 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "chipolata"
 version = "1.0.0"
 dependencies = [
+ "console_error_panic_hook",
+ "getrandom 0.2.1",
  "minifb",
  "rand 0.8.1",
  "rodio",
  "structopt",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -268,6 +272,16 @@ checksum = "cc4369b5e4c0cddf64ad8981c0111e7df4f7078f4d6ba98fb31f2e17c4c57b7e"
 dependencies = [
  "bytes",
  "memchr",
+]
+
+[[package]]
+name = "console_error_panic_hook"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8d976903543e0c48546a91908f21588a680a8c8f984df9a5d69feccb2b2a211"
+dependencies = [
+ "cfg-if 0.1.10",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -527,8 +541,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4060f4657be78b8e766215b02b18a2e862d83745545de804638e2b545e81aee6"
 dependencies = [
  "cfg-if 1.0.0",
+ "js-sys",
  "libc",
  "wasi 0.10.1+wasi-snapshot-preview1",
+ "wasm-bindgen",
 ]
 
 [[package]]
