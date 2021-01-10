@@ -94,10 +94,14 @@ fn main() {
     sink.append(source);
     sink.pause();
 
-    while window.is_open() && !window.is_key_down(Key::Escape) {
-        let keypad = read_keypad(&window);
+    let mut keypad = [false; 16];
 
-        for _ in 0..speed {
+    while window.is_open() && !window.is_key_down(Key::Escape) {
+        for i in 0..speed {
+            if i % 2 == 1 {
+                keypad = read_keypad(&window);
+            }
+
             cpu.step(keypad);
 
             if cpu.should_redraw() {

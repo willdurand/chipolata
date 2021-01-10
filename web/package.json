@@ -7,8 +7,7 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "chipolata": "file:../pkg",
-    "tailwindcss": "^2.0.2"
+    "chipolata": "file:../pkg"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.0",

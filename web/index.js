@@ -22,18 +22,27 @@ document.addEventListener("keyup", (event) => {
 });
 
 // TODO: make it configurable
-const speed = 8;
+const speed = 15;
 
 fetch("./space-invaders.ch8").then(async (response) => {
   const rom = await response.arrayBuffer();
   const interpreter = new chipolata.Interpreter(new Uint8Array(rom));
 
   const renderLoop = () => {
-    const keypad = makeKeypad(keysPressed);
+    let redraw = false;
+    for (let i = 0; i < speed; i++) {
+      if (i % 3) {
+        interpreter.update_keypad(makeKeypad(keysPressed));
+      }
 
-    interpreter.tick(new Uint8Array(keypad), speed);
+      interpreter.step();
 
-    if (interpreter.should_redraw()) {
+      if (interpreter.should_redraw()) {
+        redraw = true;
+      }
+    }
+
+    if (redraw) {
       const framebuffer = new Uint8Array(
         memory.buffer,
         interpreter.get_framebuffer_ptr(),

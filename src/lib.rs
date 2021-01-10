@@ -17,7 +17,7 @@ macro_rules! log {
 #[wasm_bindgen]
 pub struct Interpreter {
     cpu: cpu::CPU,
-    redraw: bool,
+    keypad: [bool; 16],
     framebuffer: [u8; cpu::WIDTH * cpu::HEIGHT],
 }
 
@@ -33,32 +33,26 @@ impl Interpreter {
 
         Interpreter {
             cpu,
-            redraw: false,
+            keypad: [false; 16],
             framebuffer: [0; cpu::WIDTH * cpu::HEIGHT],
         }
     }
 
-    pub fn tick(&mut self, keypad: Vec<u8>, speed: u8) {
-        let keypad: [bool; 16] = keypad
+    pub fn update_keypad(&mut self, keypad: Vec<u8>) {
+        self.keypad = keypad
             .iter()
             .map(|x| *x == 1)
             .collect::<Vec<bool>>()
             .try_into()
             .unwrap();
+    }
 
-        self.redraw = false;
-
-        for _ in 0..speed {
-            self.cpu.step(keypad);
-
-            if self.cpu.should_redraw() {
-                self.redraw = true;
-            }
-        }
+    pub fn step(&mut self) {
+        self.cpu.step(self.keypad);
     }
 
     pub fn should_redraw(&self) -> bool {
-        self.redraw
+        self.cpu.should_redraw()
     }
 
     pub fn should_beep(&self) -> bool {

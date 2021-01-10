@@ -7,7 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, "..", "docs"),
     filename: "bootstrap.js",
   },
-  mode: "development",
+  mode: process.env.NODE_ENV || "development",
   plugins: [
     new CopyWebpackPlugin(['index.html'])
   ],
