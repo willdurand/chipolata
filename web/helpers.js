@@ -45,18 +45,31 @@ const makePixel = (context, color) => {
   return pixel;
 };
 
-export const createScreen = ($canvas, width, height) => {
+export const createDisplay = (
+  $canvas,
+  width,
+  height,
+  screenWidth,
+  screenHeight
+) => {
+  // Original dimensions.
   $canvas.width = width;
   $canvas.height = height;
 
-  const screen = $canvas.getContext("2d");
+  // Actual dimensions on the page. We substract `40` so that the display
+  // becomes smaller than the actual device screen on small screens.
+  const displayWidth = Math.min(screenWidth - 40, width * 10);
+  $canvas.style.width = `${displayWidth}px`;
+  $canvas.style.height = `${displayWidth / 2}px`;
 
-  const BLACK_PIXEL = makePixel(screen, 0);
-  const WHITE_PIXEL = makePixel(screen, 255);
+  const display = $canvas.getContext("2d");
+
+  const BLACK_PIXEL = makePixel(display, 0);
+  const WHITE_PIXEL = makePixel(display, 255);
 
   return {
     drawPixelAt(white, x, y) {
-      screen.putImageData(white ? WHITE_PIXEL : BLACK_PIXEL, x, y);
+      display.putImageData(white ? WHITE_PIXEL : BLACK_PIXEL, x, y);
     },
   };
 };

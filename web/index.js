@@ -1,6 +1,6 @@
 import * as libchipolata from "libchipolata";
 import { memory } from "libchipolata/libchipolata_bg";
-import { createAudio, createScreen, makeKeypad } from "./helpers";
+import { createAudio, createDisplay, makeKeypad } from "./helpers";
 
 // TODO: retrieve these values via the interpreter instance.
 const WIDTH = 64;
@@ -8,8 +8,14 @@ const HEIGHT = 32;
 
 // TODO: add controls to mute sound
 const audio = createAudio();
-// TODO: add controls to change screen dimensions
-const screen = createScreen(document.getElementById("screen"), WIDTH, HEIGHT);
+// TODO: add controls to change display dimensions
+const display = createDisplay(
+  document.getElementById("display"),
+  WIDTH,
+  HEIGHT,
+  screen.width,
+  screen.height
+);
 
 const keysPressed = {};
 
@@ -51,7 +57,7 @@ fetch("./space-invaders.ch8").then(async (response) => {
 
       for (let x = 0; x < WIDTH; x++) {
         for (let y = 0; y < HEIGHT; y++) {
-          screen.drawPixelAt(framebuffer[x + y * WIDTH] == 1, x, y);
+          display.drawPixelAt(framebuffer[x + y * WIDTH] == 1, x, y);
         }
       }
     }
