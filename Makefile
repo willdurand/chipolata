@@ -10,6 +10,10 @@ cli-dev: ## build and run the CLI in debug mode
 	cargo run --features=cli "$(rom)"
 .PHONY: cli-dev
 
+release-cli:
+	cargo build --features=cli
+.PHONY: release-cli
+
 release-web: ## build the web app in release mode
 release-web: WASM_PACK_OPTS = --release
 release-web: setup-web build-wasm-bindings
