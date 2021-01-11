@@ -10,7 +10,7 @@ const HEIGHT = 32;
 const audio = createAudio();
 // TODO: add controls to change display dimensions
 const display = createDisplay(
-  document.getElementById("display"),
+  document.getElementById("display-canvas"),
   WIDTH,
   HEIGHT,
   screen.width,

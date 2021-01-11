@@ -4,97 +4,60 @@
     <title>chipolata</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css"
-    />
-    <style>
-      html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      }
-
-      body {
-        background-color: #e3e3e3;
-        text-align: center;
-      }
-
-      #display {
-        image-rendering: crisp-edges;
-      }
-
-      .pure-g > div {
-        margin: 1em;
-      }
-
-      .game-info {
-        margin: 1em auto;
-        max-width: 600px;
-        text-align: justify;
-      }
-
-      div.main {
-        margin: 4% auto 4%;
-      }
-
-      div.help {
-        text-align: justify;
-      }
-
-      .footer {
-        font-size: 0.8em;
-        font-style: italic;
-      }
-
-      @media screen and (min-width: 64em) {
-        .pure-g > div {
-          margin: initial;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/terminal.css@0.7.2/dist/terminal.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
-    <div class="pure-g">
-      <div class="pure-u-1">
-        <h1>chipolata</h1>
+  <body class="terminal">
+    <div class="container">
+      <header class="header">
+        <div class="logo terminal-prompt">
+          <a href="" class="no-style">chipolata</a>
+        </div>
         <p>A CHIP-8 interpreter written in Rust.</p>
-      </div>
-    </div>
-    <div class="pure-g main">
-      <div class="pure-u-1 pure-u-lg-15-24">
-        <canvas id="display"></canvas>
-        <p class="game-info">
-          This Space Invaders ROM (author: David Winter) comes from the "revival pack" that can be found
-          on the Internet (e.g. <a href="https://github.com/dmatlack/chip8/tree/master/roms">here</a>).
-        </p>
-      </div>
-      <div class="pure-u-1 pure-u-lg-8-24 help">
-        <h3>Help:</h3>
-        <p>
-          The CHIP-8 virtual machine requires a hex keyboard that has 16 keys
-          ranging from 0 to F, which isn't trendy these days. For this
-          interpreter, the 16 keys are remapped to those on the top left part
-          of a QWERTY keyboard:
+        <hr>
+      </header>
 
-          <pre>
-          1 2 3 C      1 2 3 4
-          4 5 6 D  =>  Q W E R
-          7 8 9 E      A S D F
-          Z X C V      A 0 B F
-          </pre>
-        </p>
-        <p>
-          Start playing <strong>Space Invaders</strong> with <kbd>W<kbd>. Move to
-          the left with <kbd>Q</kbd> and to the right with <kbd>E</kbd>. Fire
-          with <kbd>W</kbd>.
-        </p>
+      <div class="main">
+        <div class="display">
+          <canvas id="display-canvas"></canvas>
+        </div>
       </div>
-    </div>
-    <div class="pure-g">
-      <div class="pure-u-1 footer">
+
+      <div class="game-info">
+        <div class="terminal-card">
+          <header>about this game</header>
+          <div>
+            This Space Invaders ROM (author: David Winter) comes from the
+            "revival pack" that can be found on the Internet (e.g.
+            <a href="https://github.com/dmatlack/chip8/tree/master/roms">here</a>).
+          </div>
+        </div>
+      </div>
+
+      <div class="help">
+        <div class="terminal-card">
+          <header>help</header>
+          <div>
+            The CHIP-8 virtual machine requires a hex keyboard that has 16 keys
+            ranging from 0 to F, which isn't trendy these days. For this
+            interpreter, the 16 keys are remapped to those on the top left part
+            of a QWERTY keyboard:
+
+            <pre>
+        1 2 3 C      1 2 3 4
+        4 5 6 D  =>  Q W E R
+        7 8 9 E      A S D F
+        Z X C V      A 0 B F</pre>
+
+            Start playing <strong>Space Invaders</strong> with <kbd>W<kbd>. Move to
+            the left with <kbd>Q</kbd> and to the right with <kbd>E</kbd>. Fire
+            with <kbd>W</kbd>.
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <hr>
         <p>
           This project started as a "week-end project" by
           <a href="https://twitter.com/couac">@couac</a>. The source code is
@@ -102,7 +65,7 @@
           <a href="https://github.com/willdurand/chipolata">GitHub</a> (MIT
           license).
         </p>
-      </div>
+      </footer>
     </div>
     <script src="./bootstrap.js"></script>
   </body>
