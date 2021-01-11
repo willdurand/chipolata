@@ -10,7 +10,7 @@ use std::io::Write;
 use std::process;
 use structopt::StructOpt;
 
-use libchipolata::{cpu, mmu};
+use libchipolata::chip8;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -20,7 +20,7 @@ struct Cli {
     /// The path to a ROM.
     #[structopt(parse(from_os_str))]
     rom_name: std::path::PathBuf,
-    #[structopt(default_value = "8", long)]
+    #[structopt(default_value = "5", long)]
     speed: u8,
 }
 
@@ -60,9 +60,7 @@ fn main() {
     let speed = args.speed;
 
     // Chip8
-    let mmu = mmu::MMU::new(rom);
-    let mut cpu = cpu::CPU::new(mmu);
-    let mut redraw = false;
+    let mut interpreter = chip8::Interpreter::new(rom);
 
     // Debugger
     let mut stepping = false;
@@ -72,8 +70,8 @@ fn main() {
     // Graphics
     let mut window = Window::new(
         format!("chipolata - {} - ESC to exit", rom_name.to_str().unwrap()).as_str(),
-        cpu::WIDTH,
-        cpu::HEIGHT,
+        chip8::WIDTH,
+        chip8::HEIGHT,
         WindowOptions {
             borderless: false,
             resize: false,
@@ -85,7 +83,7 @@ fn main() {
     .unwrap_or_else(|e| {
         panic!("{}", e);
     });
-    let mut buffer: Vec<u32> = vec![0; cpu::WIDTH * cpu::HEIGHT];
+    let mut buffer: Vec<u32> = vec![0; chip8::WIDTH * chip8::HEIGHT];
 
     // Audio
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
@@ -95,23 +93,24 @@ fn main() {
     sink.pause();
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
+        let mut redraw = false;
         for _ in 0..speed {
-            let keypad = read_keypad(&window);
-            cpu.step(keypad);
+            interpreter.update_keypad(read_keypad(&window));
+            interpreter.step();
 
-            if cpu.should_redraw() {
+            if interpreter.should_redraw() {
                 redraw = true;
             }
         }
 
-        if (args.debug && cpu.get_pc() == 0x202)
-            || address_breakpoints.contains(&cpu.get_pc())
-            || opcode_breakpoints.contains(&cpu.fetch_instruction())
+        if (args.debug && interpreter.cpu.get_pc() == 0x202)
+            || address_breakpoints.contains(&interpreter.cpu.get_pc())
+            || opcode_breakpoints.contains(&interpreter.cpu.fetch_instruction())
             || window.is_key_down(Key::O)
         {
             stepping = true;
-            cpu.enable_debug();
-            println!("Breakpoint hit at 0x{:04X}", cpu.get_pc());
+            interpreter.cpu.enable_debug();
+            println!("Breakpoint hit at 0x{:04X}", interpreter.cpu.get_pc());
         }
 
         if stepping {
@@ -128,28 +127,28 @@ fn main() {
                     print!("Exiting... o/");
                     process::exit(0);
                 } else if input == "p cpu" {
-                    println!("{:?}", cpu);
+                    println!("{:?}", interpreter.cpu);
                 } else if input.starts_with("p ") {
                     if let Ok(address) = u16::from_str_radix(&input[2..], 16) {
-                        println!("0x{:04X}", cpu.read_byte(address));
+                        println!("0x{:04X}", interpreter.cpu.read_byte(address));
                     } else {
                         println!("Invalid address: {:?}", &input[2..]);
                     }
                 } else if input == "s" {
                     let keypad = read_keypad(&window);
-                    cpu.step(keypad);
+                    interpreter.cpu.step(keypad);
                 } else if input.starts_with("s ") {
                     if let Ok(mut n) = u16::from_str_radix(&input[2..], 10) {
                         while n > 0 {
                             let keypad = read_keypad(&window);
-                            cpu.step(keypad);
+                            interpreter.cpu.step(keypad);
                             n -= 1;
                         }
                     } else {
                         println!("Invalid number: {:?}", &input[3..]);
                     }
                 } else if input == "c" {
-                    cpu.disable_debug();
+                    interpreter.cpu.disable_debug();
                     stepping = false;
                     break;
                 } else if input.starts_with("ba ") {
@@ -171,9 +170,12 @@ fn main() {
                     opcode_breakpoints.clear();
                     println!("cleared breakpoints!");
                 } else if input == "r" {
-                    cpu.reset();
-                    println!("cpu reset!");
+                    interpreter.reset();
+                    println!("reset!");
                 } else {
+                    if input != "help" {
+                        print!("Invalid command. ");
+                    }
                     println!("Available commands:");
                     println!("");
                     println!("  ba [u16] : set breakpoint at address [u16]");
@@ -190,23 +192,27 @@ fn main() {
         }
 
         if redraw {
-            for x in 0..cpu::WIDTH {
-                for y in 0..cpu::HEIGHT {
-                    buffer[x + (y * cpu::WIDTH)] = if cpu.vram[x][y] { 0xFFFFFF } else { 0x0 };
+            for x in 0..chip8::WIDTH {
+                for y in 0..chip8::HEIGHT {
+                    buffer[x + (y * chip8::WIDTH)] = if interpreter.get_vram()[x][y] {
+                        0xFFFFFF
+                    } else {
+                        0x0
+                    };
                 }
             }
         }
 
-        if cpu.should_beep() {
+        if interpreter.should_beep() {
             sink.play();
         } else {
             sink.pause();
         }
 
-        cpu.update_timers();
+        interpreter.update_timers();
 
         window
-            .update_with_buffer(&buffer, cpu::WIDTH, cpu::HEIGHT)
+            .update_with_buffer(&buffer, chip8::WIDTH, chip8::HEIGHT)
             .unwrap();
     }
 }

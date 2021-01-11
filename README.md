@@ -32,6 +32,10 @@ See: https://williamdurand.fr/chipolata/
 
 ## Development
 
+```
+$ make bootstrap
+```
+
 ### CLI
 
 You can build and run the CLI with the following command:

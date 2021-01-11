@@ -1,72 +1,59 @@
-extern crate console_error_panic_hook;
-extern crate web_sys;
-
 use std::convert::TryInto;
 use wasm_bindgen::prelude::*;
 
-use crate::cpu;
-use crate::mmu;
+use crate::chip8;
 
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
+#[wasm_bindgen]
+pub struct JsInterpreter {
+    interpreter: chip8::Interpreter,
+    // We need a framebuffer in the JsInterpreter in order to read it in the WASM memory.
+    framebuffer: [u8; chip8::WIDTH * chip8::HEIGHT],
 }
 
 #[wasm_bindgen]
-pub struct Interpreter {
-    cpu: cpu::CPU,
-    keypad: [bool; 16],
-    framebuffer: [u8; cpu::WIDTH * cpu::HEIGHT],
-}
-
-#[wasm_bindgen]
-impl Interpreter {
+impl JsInterpreter {
     #[wasm_bindgen(constructor)]
     pub fn new(rom: Vec<u8>) -> Self {
-        console_error_panic_hook::set_once();
-        log!("creating interpreter: rom size={:}", rom.len());
-
-        let mmu = mmu::MMU::new(rom);
-        let cpu = cpu::CPU::new(mmu);
-
-        Interpreter {
-            cpu,
-            keypad: [false; 16],
-            framebuffer: [0; cpu::WIDTH * cpu::HEIGHT],
+        JsInterpreter {
+            interpreter: chip8::Interpreter::new(rom),
+            framebuffer: [0; chip8::WIDTH * chip8::HEIGHT],
         }
     }
 
     pub fn update_keypad(&mut self, keypad: Vec<u8>) {
-        self.keypad = keypad
+        let keypad = keypad
             .iter()
             .map(|x| *x == 1)
             .collect::<Vec<bool>>()
             .try_into()
             .unwrap();
+        self.interpreter.update_keypad(keypad);
     }
 
     pub fn step(&mut self) {
-        self.cpu.step(self.keypad);
+        self.interpreter.step();
     }
 
     pub fn should_redraw(&self) -> bool {
-        self.cpu.should_redraw()
+        self.interpreter.should_redraw()
     }
 
     pub fn should_beep(&self) -> bool {
-        self.cpu.should_beep()
+        self.interpreter.should_beep()
     }
 
     pub fn update_timers(&mut self) {
-        self.cpu.update_timers();
+        self.interpreter.update_timers();
     }
 
     pub fn get_framebuffer_ptr(&mut self) -> *const u8 {
-        for x in 0..cpu::WIDTH {
-            for y in 0..cpu::HEIGHT {
-                self.framebuffer[x + (y * cpu::WIDTH)] = if self.cpu.vram[x][y] { 1 } else { 0 };
+        for x in 0..chip8::WIDTH {
+            for y in 0..chip8::HEIGHT {
+                self.framebuffer[x + (y * chip8::WIDTH)] = if self.interpreter.get_vram()[x][y] {
+                    1
+                } else {
+                    0
+                };
             }
         }
 

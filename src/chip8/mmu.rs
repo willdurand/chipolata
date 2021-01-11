@@ -23,6 +23,11 @@ impl MMU {
         mmu
     }
 
+    pub fn load_rom(&mut self, rom: Vec<u8>) {
+        self.rom = rom;
+        self.reset();
+    }
+
     pub fn reset(&mut self) {
         self.ram = [0; RAM_SIZE];
         // Load fontset.
