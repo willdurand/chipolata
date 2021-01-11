@@ -1,11 +1,17 @@
 # chipolata
 
 This project is a [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) interpreter
-written in Rust. It can be compiled and run as a program or web application.
+written in Rust. It can be compiled and run as a "desktop" program (cross
+platform) or web application. The "desktop" program provides a simple yet useful
+console debugger too.
+
+![](./docs/screenshot-readme.png)
 
 ## Usage
 
-### CLI
+### Desktop
+
+The "desktop" program should be run from the command line interface (console):
 
 ```
 $ chipolata
@@ -36,9 +42,9 @@ See: https://williamdurand.fr/chipolata/
 $ make bootstrap
 ```
 
-### CLI
+### Desktop
 
-You can build and run the CLI with the following command:
+You can build and run the "desktop" app with the following command:
 
 ```
 $ make cli-dev rom=<path to rom>
