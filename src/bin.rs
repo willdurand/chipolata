@@ -64,6 +64,7 @@ fn main() {
 
     // Debugger
     let mut stepping = false;
+    let mut boot = true;
     let mut address_breakpoints = HashSet::new();
     let mut opcode_breakpoints: HashSet<u16> = HashSet::new();
 
@@ -94,16 +95,21 @@ fn main() {
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         let mut redraw = false;
-        for _ in 0..speed {
-            interpreter.update_keypad(read_keypad(&window));
-            interpreter.step();
 
-            if interpreter.should_redraw() {
-                redraw = true;
+        if args.debug && boot {
+            boot = false;
+        } else {
+            for _ in 0..speed {
+                interpreter.update_keypad(read_keypad(&window));
+                interpreter.step();
+
+                if interpreter.should_redraw() {
+                    redraw = true;
+                }
             }
         }
 
-        if (args.debug && interpreter.cpu.get_pc() == 0x202)
+        if (args.debug && interpreter.cpu.get_pc() == 0x200)
             || address_breakpoints.contains(&interpreter.cpu.get_pc())
             || opcode_breakpoints.contains(&interpreter.cpu.fetch_instruction())
             || window.is_key_down(Key::O)
