@@ -7,7 +7,7 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "chipolata": "file:../pkg"
+    "libchipolata": "file:../pkg"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.0",

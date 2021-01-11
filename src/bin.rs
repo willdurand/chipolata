@@ -10,7 +10,7 @@ use std::io::Write;
 use std::process;
 use structopt::StructOpt;
 
-use chipolata::{cpu, mmu};
+use libchipolata::{cpu, mmu};
 
 #[derive(StructOpt)]
 struct Cli {
