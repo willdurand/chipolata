@@ -6,8 +6,8 @@ bootstrap: ## install the tools required to build and run this project
 	cargo install cargo-watch
 .PHONY: setup
 
-cli-dev: ## build the CLI in debug mode
-	cargo build --features=cli --debug
+cli-dev: ## build and run the CLI in debug mode
+	cargo run --features=cli "$(rom)"
 .PHONY: build-cli
 
 release-web: ## build the web app in release mode

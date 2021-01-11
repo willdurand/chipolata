@@ -14,7 +14,7 @@ use libchipolata::{cpu, mmu};
 
 #[derive(StructOpt)]
 struct Cli {
-    /// Enable debug mode.
+    /// Enable debug mode (debugger).
     #[structopt(short, long)]
     debug: bool,
     /// The path to a ROM.
@@ -94,14 +94,9 @@ fn main() {
     sink.append(source);
     sink.pause();
 
-    let mut keypad = [false; 16];
-
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        for i in 0..speed {
-            if i % 2 == 1 {
-                keypad = read_keypad(&window);
-            }
-
+        for _ in 0..speed {
+            let keypad = read_keypad(&window);
             cpu.step(keypad);
 
             if cpu.should_redraw() {

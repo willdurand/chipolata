@@ -3,7 +3,9 @@
 This project is a [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) interpreter
 written in Rust. It can be compiled and run as a program or web application.
 
-## CLI
+## Usage
+
+### CLI
 
 ```
 $ chipolata
@@ -13,7 +15,7 @@ USAGE:
     chipolata [FLAGS] [OPTIONS] <rom-name>
 
 FLAGS:
-    -d, --debug      Enable debug mode
+    -d, --debug      Enable debug mode (debugger)
     -h, --help       Prints help information
     -V, --version    Prints version information
 
@@ -24,9 +26,30 @@ ARGS:
     <rom-name>    The path to a ROM
 ```
 
-## Web
+### Web App
 
 See: https://williamdurand.fr/chipolata/
+
+## Development
+
+### CLI
+
+You can build and run the CLI with the following command:
+
+```
+$ make cli-dev rom=<path to rom>
+```
+
+Type <kbd>o</kbd> in the display window to start the debugger (in the console).
+
+### Web App
+
+You can build and run the web app in development mode with the following
+command:
+
+```
+$ make dev
+```
 
 ## Links
 
