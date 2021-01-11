@@ -1,5 +1,5 @@
-import * as chipolata from "chipolata";
-import { memory } from "chipolata/chipolata_bg";
+import * as libchipolata from "libchipolata";
+import { memory } from "libchipolata/libchipolata_bg";
 import { createAudio, createScreen, makeKeypad } from "./helpers";
 
 // TODO: retrieve these values via the interpreter instance.
@@ -26,7 +26,7 @@ const speed = 15;
 
 fetch("./space-invaders.ch8").then(async (response) => {
   const rom = await response.arrayBuffer();
-  const interpreter = new chipolata.Interpreter(new Uint8Array(rom));
+  const interpreter = new libchipolata.Interpreter(new Uint8Array(rom));
 
   const renderLoop = () => {
     let redraw = false;
