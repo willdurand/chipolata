@@ -4,11 +4,11 @@ WASM_PACK_OPTS ?=
 
 bootstrap: ## install the tools required to build and run this project
 	cargo install cargo-watch
-.PHONY: setup
+.PHONY: bootstrap
 
 cli-dev: ## build and run the CLI in debug mode
 	cargo run --features=cli "$(rom)"
-.PHONY: build-cli
+.PHONY: cli-dev
 
 release-web: ## build the web app in release mode
 release-web: WASM_PACK_OPTS = --release

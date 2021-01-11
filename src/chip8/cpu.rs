@@ -1,7 +1,7 @@
-use crate::mmu;
-
 use rand::Rng;
 use std::fmt;
+
+use super::mmu;
 
 pub const WIDTH: usize = 64;
 pub const HEIGHT: usize = 32;
@@ -218,6 +218,11 @@ impl CPU {
 
     pub fn read_byte(&mut self, addr: u16) -> u8 {
         self.mmu.read_byte(addr as usize)
+    }
+
+    pub fn load_rom(&mut self, rom: Vec<u8>) {
+        self.reset();
+        self.mmu.load_rom(rom);
     }
 
     fn execute(&mut self, opcode: u16) {
