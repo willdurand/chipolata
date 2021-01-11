@@ -7,6 +7,10 @@
       rel="stylesheet"
       href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css"
+    />
     <style>
       html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -14,23 +18,15 @@
 
       body {
         background-color: #e3e3e3;
-
+        text-align: center;
       }
 
-      #screen {
-        image-rendering: optimizeSpeed;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: -o-crisp-edges;
-        image-rendering: optimize-contrast;
-        -ms-interpolation-mode: nearest-neighbor;
-        width: 640px;
-        height: 320px;
+      #display {
+        image-rendering: crisp-edges;
       }
 
       .pure-g > div {
-        box-sizing: border-box;
-        text-align: center;
+        margin: 1em;
       }
 
       .game-info {
@@ -39,8 +35,8 @@
         text-align: justify;
       }
 
-      .main {
-        margin: 5% auto 5%;
+      div.main {
+        margin: 4% auto 4%;
       }
 
       div.help {
@@ -50,6 +46,12 @@
       .footer {
         font-size: 0.8em;
         font-style: italic;
+      }
+
+      @media screen and (min-width: 64em) {
+        .pure-g > div {
+          margin: initial;
+        }
       }
     </style>
   </head>
@@ -61,14 +63,14 @@
       </div>
     </div>
     <div class="pure-g main">
-      <div class="pure-u-15-24">
-        <canvas id="screen"></canvas>
+      <div class="pure-u-1 pure-u-lg-15-24">
+        <canvas id="display"></canvas>
         <p class="game-info">
           This Space Invaders ROM (author: David Winter) comes from the "revival pack" that can be found
           on the Internet (e.g. <a href="https://github.com/dmatlack/chip8/tree/master/roms">here</a>).
         </p>
       </div>
-      <div class="pure-u-8-24 help">
+      <div class="pure-u-1 pure-u-lg-8-24 help">
         <h3>Help:</h3>
         <p>
           The CHIP-8 virtual machine requires a hex keyboard that has 16 keys
