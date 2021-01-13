@@ -1,5 +1,5 @@
 :root {
-  --page-width: 80em;
+  --page-width: 1010px;
 }
 
 .container {
@@ -10,7 +10,8 @@
   grid-template-areas:
     "header header header"
     "main main help"
-    "ram registers game-info"
+    "game-info game-info help"
+    "game-info game-info opcode"
     "footer footer footer";
 }
 
@@ -23,6 +24,7 @@
 }
 
 .display canvas {
+  border: 1px solid black;
   image-rendering: crisp-edges;
 }
 
@@ -30,26 +32,18 @@
   grid-area: game-info;
 }
 
-.ram {
-  grid-area: ram;
-  max-width: 350px;
+.opcode {
+  grid-area: opcode;
 }
 
-.registers {
-  grid-area: registers;
-  max-width: 350px;
-}
-
-.ram code {
-  display: block;
-  height: 150px;
+.opcode .values {
+  height: 200px;
   overflow: auto;
-  text-align: center;
 }
 
-.ram code::before,
-.ram code::after {
-  content: "";
+.opcode .current-addr {
+  background-color: black;
+  color: white;
 }
 
 .main {
@@ -58,6 +52,11 @@
 
 .help {
   grid-area: help;
+}
+
+.help .keymap {
+  border: none;
+  text-align: center;
 }
 
 .footer {
@@ -72,8 +71,7 @@
       "main"
       "game-info"
       "help"
-      "registers"
-      "ram"
+      "opcode"
       "footer";
   }
 }
