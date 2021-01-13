@@ -48,6 +48,23 @@ const run = (rom, speed) => {
   const ram = new Uint8Array(memory.buffer, interpreter.get_ram_ptr(), 0x1000);
   $opcode.innerHTML = disassemble(ram);
 
+  const updateInfo = () => {
+    const pc = interpreter.get_pc();
+
+    const className = "current-addr";
+    const oldAddr = document.querySelector(`.${className}`);
+    oldAddr && oldAddr.classList.toggle(className);
+
+    const newAddr = document.querySelector(`.addr-${pc}`);
+    if (newAddr) {
+      newAddr.classList.toggle(className);
+      newAddr.parentElement.scrollTo(
+        0,
+        newAddr.offsetTop - newAddr.parentElement.offsetTop - 70
+      );
+    }
+  };
+
   const renderLoop = () => {
     let redraw = false;
     for (let i = 0; i < speed; i++) {
@@ -70,6 +87,8 @@ const run = (rom, speed) => {
     }
 
     interpreter.update_timers();
+
+    updateInfo();
 
     requestAnimationFrame(renderLoop);
   };

@@ -1,5 +1,5 @@
 :root {
-  --page-width: 80em;
+  --page-width: 1010px;
 }
 
 .container {
@@ -52,6 +52,11 @@
 
 .help {
   grid-area: help;
+}
+
+.help .keymap {
+  border: none;
+  text-align: center;
 }
 
 .footer {
