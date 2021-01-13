@@ -1,5 +1,7 @@
 # chipolata
 
+![Rust](https://github.com/willdurand/chipolata/workflows/Rust/badge.svg)
+
 This project is a [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) interpreter
 written in Rust. It can be compiled and run as a "desktop" program (cross
 platform) or web application. The "desktop" program provides a simple yet useful
