@@ -49,6 +49,10 @@ impl Interpreter {
         self.cpu.vram.as_ptr()
     }
 
+    pub fn get_ram_ptr(&self) -> *const u8 {
+        self.cpu.mmu.get_ram_ptr()
+    }
+
     pub fn reset(&mut self) {
         self.cpu.reset()
     }

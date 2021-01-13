@@ -71,4 +71,8 @@ impl MMU {
     pub fn read_word(&mut self, addr: usize) -> u16 {
         ((self.read_byte(addr) as u16) << 8) | (self.read_byte(addr + 1) as u16)
     }
+
+    pub fn get_ram_ptr(&self) -> *const u8 {
+        self.ram.as_ptr()
+    }
 }

@@ -8,10 +8,11 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   grid-template-areas:
-  "header header header"
-  "main main help"
-  "main main game-info"
-  "footer footer footer";
+    "header header header"
+    "main main help"
+    "game-info game-info help"
+    "game-info game-info opcode"
+    "footer footer footer";
 }
 
 .header {
@@ -31,6 +32,20 @@
   grid-area: game-info;
 }
 
+.opcode {
+  grid-area: opcode;
+}
+
+.opcode .values {
+  height: 200px;
+  overflow: auto;
+}
+
+.opcode .current-addr {
+  background-color: black;
+  color: white;
+}
+
 .main {
   grid-area: main;
 }
@@ -47,10 +62,11 @@
   .container {
     grid-template-columns: 1fr;
     grid-template-areas:
-    "header"
-    "main"
-    "game-info"
-    "help"
-    "footer";
+      "header"
+      "main"
+      "game-info"
+      "help"
+      "opcode"
+      "footer";
   }
 }
