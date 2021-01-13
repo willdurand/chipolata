@@ -200,7 +200,8 @@ fn main() {
         if redraw {
             for x in 0..chip8::WIDTH {
                 for y in 0..chip8::HEIGHT {
-                    buffer[x + (y * chip8::WIDTH)] = if interpreter.get_vram()[x][y] {
+                    let i = x + (y * chip8::WIDTH);
+                    buffer[i] = if interpreter.get_vram()[i] == 1 {
                         0xFFFFFF
                     } else {
                         0x0

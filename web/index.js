@@ -28,11 +28,16 @@ document.addEventListener("keyup", (event) => {
 });
 
 // TODO: make it configurable
-const speed = 10;
+const speed = 9;
 
 fetch("./space-invaders.ch8").then(async (response) => {
   const rom = await response.arrayBuffer();
   const interpreter = new libchipolata.JsInterpreter(new Uint8Array(rom));
+  const vram = new Uint8Array(
+    memory.buffer,
+    interpreter.get_vram_ptr(),
+    WIDTH * HEIGHT
+  );
 
   const renderLoop = () => {
     let redraw = false;
@@ -46,15 +51,9 @@ fetch("./space-invaders.ch8").then(async (response) => {
     }
 
     if (redraw) {
-      const framebuffer = new Uint8Array(
-        memory.buffer,
-        interpreter.get_framebuffer_ptr(),
-        WIDTH * HEIGHT
-      );
-
       for (let x = 0; x < WIDTH; x++) {
         for (let y = 0; y < HEIGHT; y++) {
-          display.drawPixelAt(framebuffer[x + y * WIDTH] == 1, x, y);
+          display.drawPixelAt(vram[x + y * WIDTH] == 1, x, y);
         }
       }
     }

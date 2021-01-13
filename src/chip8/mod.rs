@@ -41,8 +41,12 @@ impl Interpreter {
         self.cpu.update_timers();
     }
 
-    pub fn get_vram(&self) -> [[bool; HEIGHT]; WIDTH] {
+    pub fn get_vram(&self) -> [u8; HEIGHT * WIDTH] {
         self.cpu.vram
+    }
+
+    pub fn get_vram_ptr(&self) -> *const u8 {
+        self.cpu.vram.as_ptr()
     }
 
     pub fn reset(&mut self) {
