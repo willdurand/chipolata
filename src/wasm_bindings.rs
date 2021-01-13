@@ -50,4 +50,8 @@ impl JsInterpreter {
     pub fn get_ram_ptr(&mut self) -> *const u8 {
         self.interpreter.get_ram_ptr()
     }
+
+    pub fn get_pc(&self) -> u16 {
+        self.interpreter.cpu.get_pc()
+    }
 }
