@@ -46,4 +46,8 @@ impl JsInterpreter {
     pub fn get_vram_ptr(&mut self) -> *const u8 {
         self.interpreter.get_vram_ptr()
     }
+
+    pub fn get_ram_ptr(&mut self) -> *const u8 {
+        self.interpreter.get_ram_ptr()
+    }
 }

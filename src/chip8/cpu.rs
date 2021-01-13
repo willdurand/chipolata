@@ -108,7 +108,7 @@ impl fmt::Debug for Keypad {
 }
 
 pub struct CPU {
-    mmu: mmu::MMU,
+    pub mmu: mmu::MMU,
 
     pub vram: [u8; HEIGHT * WIDTH],
     vram_changed: bool,
