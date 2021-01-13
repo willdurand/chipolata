@@ -6,8 +6,6 @@ use crate::chip8;
 #[wasm_bindgen]
 pub struct JsInterpreter {
     interpreter: chip8::Interpreter,
-    // We need a framebuffer in the JsInterpreter in order to read it in the WASM memory.
-    framebuffer: [u8; chip8::WIDTH * chip8::HEIGHT],
 }
 
 #[wasm_bindgen]
@@ -16,7 +14,6 @@ impl JsInterpreter {
     pub fn new(rom: Vec<u8>) -> Self {
         JsInterpreter {
             interpreter: chip8::Interpreter::new(rom),
-            framebuffer: [0; chip8::WIDTH * chip8::HEIGHT],
         }
     }
 
@@ -46,17 +43,7 @@ impl JsInterpreter {
         self.interpreter.update_timers();
     }
 
-    pub fn get_framebuffer_ptr(&mut self) -> *const u8 {
-        for x in 0..chip8::WIDTH {
-            for y in 0..chip8::HEIGHT {
-                self.framebuffer[x + (y * chip8::WIDTH)] = if self.interpreter.get_vram()[x][y] {
-                    1
-                } else {
-                    0
-                };
-            }
-        }
-
-        self.framebuffer.as_ptr()
+    pub fn get_vram_ptr(&mut self) -> *const u8 {
+        self.interpreter.get_vram_ptr()
     }
 }

@@ -110,7 +110,7 @@ impl fmt::Debug for Keypad {
 pub struct CPU {
     mmu: mmu::MMU,
 
-    pub vram: [[bool; HEIGHT]; WIDTH],
+    pub vram: [u8; HEIGHT * WIDTH],
     vram_changed: bool,
 
     registers: Registers,
@@ -127,7 +127,7 @@ impl CPU {
     pub fn new(mmu: mmu::MMU) -> Self {
         let mut cpu = CPU {
             mmu,
-            vram: [[false; HEIGHT]; WIDTH],
+            vram: [0; HEIGHT * WIDTH],
             vram_changed: false,
             registers: Registers::default(),
             timers: Timers::default(),
@@ -205,7 +205,7 @@ impl CPU {
 
     pub fn reset(&mut self) {
         self.mmu.reset();
-        self.vram = [[false; HEIGHT]; WIDTH];
+        self.vram = [0; HEIGHT * WIDTH];
         self.vram_changed = false;
         self.registers = Registers {
             pc: mmu::ROM_BASE_ADDR,
@@ -235,7 +235,7 @@ impl CPU {
                 0x0000 => {
                     for x in 0..WIDTH {
                         for y in 0..HEIGHT {
-                            self.vram[x][y] = false;
+                            self.vram[x + y * WIDTH] = 0;
                         }
                     }
                     self.vram_changed = true;
@@ -324,11 +324,11 @@ impl CPU {
                         let vram_y = (vy + yline) % HEIGHT;
 
                         if (pixel & (0x80 >> xline)) != 0 {
-                            if self.vram[vram_x][vram_y] {
+                            if self.vram[vram_x + vram_y * WIDTH] == 1 {
                                 self.registers.v[0xF] |= 1;
                             }
 
-                            self.vram[vram_x][vram_y] ^= true;
+                            self.vram[vram_x + vram_y * WIDTH] ^= 1;
                         }
                     }
                 }
