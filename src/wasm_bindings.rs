@@ -54,4 +54,8 @@ impl JsInterpreter {
     pub fn get_pc(&self) -> u16 {
         self.interpreter.cpu.get_pc()
     }
+
+    pub fn get_v_registers_ptr(&self) -> *const u8 {
+        self.interpreter.get_v_registers_ptr()
+    }
 }

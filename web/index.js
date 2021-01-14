@@ -14,6 +14,8 @@ const DEFAULT_SPEED = 9;
 
 const $display = document.getElementById("display-canvas");
 const $opcode = document.querySelector(".opcode .values");
+const $registers1 = document.querySelector(".registers .values-1");
+const $registers2 = document.querySelector(".registers .values-2");
 
 // TODO: add controls to mute sound
 const audio = createAudio();
@@ -48,6 +50,12 @@ const run = (rom, speed) => {
   const ram = new Uint8Array(memory.buffer, interpreter.get_ram_ptr(), 0x1000);
   $opcode.innerHTML = disassemble(ram);
 
+  const v_registers = new Uint8Array(
+    memory.buffer,
+    interpreter.get_v_registers_ptr(),
+    16
+  );
+
   const updateInfo = () => {
     const pc = interpreter.get_pc();
 
@@ -63,6 +71,20 @@ const run = (rom, speed) => {
         newAddr.offsetTop - newAddr.parentElement.offsetTop - 70
       );
     }
+
+    const values1 = [];
+    const values2 = [];
+    for (let i = 0; i < 8; i++) {
+      values1.push(
+        `v${String(i).padStart(2, "0")}=${hexformat(v_registers[i], 2)}`
+      );
+      values2.push(
+        `v${String(i + 8).padStart(2, "0")}=${hexformat(v_registers[i + 8], 2)}`
+      );
+    }
+
+    $registers1.innerHTML = values1.join("<br>");
+    $registers2.innerHTML = values2.join("<br>");
   };
 
   const renderLoop = () => {

@@ -60,4 +60,8 @@ impl Interpreter {
     pub fn load_rom(&mut self, rom: Vec<u8>) {
         self.cpu.load_rom(rom);
     }
+
+    pub fn get_v_registers_ptr(&self) -> *const u8 {
+        self.cpu.registers.v.as_ptr()
+    }
 }
