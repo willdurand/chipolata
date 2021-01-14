@@ -7,11 +7,11 @@ pub const WIDTH: usize = 64;
 pub const HEIGHT: usize = 32;
 
 #[derive(Default)]
-struct Registers {
+pub struct Registers {
     // Note: the VF register doubles as a flag for some instructions; thus, it should be avoided.
     // In an addition operation, VF is the carry flag, while in subtraction, it is the "no borrow"
     // flag. In the draw instruction VF is set upon pixel collision.
-    v: [u8; 16],
+    pub v: [u8; 16],
     // Index register
     i: usize,
     // Program counter
@@ -113,7 +113,7 @@ pub struct CPU {
     pub vram: [u8; HEIGHT * WIDTH],
     vram_changed: bool,
 
-    registers: Registers,
+    pub registers: Registers,
     timers: Timers,
     // The stack is only used to store return addresses when subroutines are called.
     stack: [u16; 16],
