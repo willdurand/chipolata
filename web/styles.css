@@ -10,6 +10,7 @@
   grid-template-areas:
     "header header header"
     "main main help"
+    "controls controls help"
     "game-info game-info help"
     "registers registers opcode"
     "footer footer footer";
@@ -79,6 +80,10 @@
   grid-area: main;
 }
 
+.controls {
+  grid-area: controls;
+}
+
 .help {
   grid-area: help;
 }
@@ -98,6 +103,7 @@
     grid-template-areas:
       "header"
       "main"
+      "controls"
       "game-info"
       "help"
       "opcode"
