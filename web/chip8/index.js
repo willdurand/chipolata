@@ -23,6 +23,9 @@ const Chip8 = {
 
   $pauseBtn: null,
   $muteBtn: null,
+  $resetBtn: null,
+
+  interpreter: null,
 
   init(_document, _screen) {
     // TODO: add controls to change display dimensions
@@ -39,16 +42,19 @@ const Chip8 = {
 
     this.$pauseBtn = _document.querySelector("#btn-pause");
     this.$muteBtn = _document.querySelector("#btn-mute");
+    this.$resetBtn = _document.querySelector("#btn-reset");
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onPauseClick = this.onPauseClick.bind(this);
     this.onMuteClick = this.onMuteClick.bind(this);
+    this.onResetClick = this.onResetClick.bind(this);
 
     _document.addEventListener("keydown", this.onKeyDown);
     _document.addEventListener("keyup", this.onKeyUp);
     this.$pauseBtn.addEventListener("click", this.onPauseClick);
     this.$muteBtn.addEventListener("click", this.onMuteClick);
+    this.$resetBtn.addEventListener("click", this.onResetClick);
   },
 
   onKeyDown(event) {
@@ -71,18 +77,22 @@ const Chip8 = {
     this.muted = !this.muted;
   },
 
+  onResetClick() {
+    this.interpreter.reset();
+  },
+
   run(rom) {
-    const interpreter = new libchipolata.JsInterpreter(rom);
+    this.interpreter = new libchipolata.JsInterpreter(rom);
 
     const vram = new Uint8Array(
       memory.buffer,
-      interpreter.get_vram_ptr(),
+      this.interpreter.get_vram_ptr(),
       this.WIDTH * this.HEIGHT
     );
 
     const ram = new Uint8Array(
       memory.buffer,
-      interpreter.get_ram_ptr(),
+      this.interpreter.get_ram_ptr(),
       0x1000
     );
 
@@ -91,7 +101,7 @@ const Chip8 = {
 
     const v_registers = new Uint8Array(
       memory.buffer,
-      interpreter.get_v_registers_ptr(),
+      this.interpreter.get_v_registers_ptr(),
       16
     );
 
@@ -99,7 +109,7 @@ const Chip8 = {
     const $registers2 = document.querySelector(".registers .values-2");
 
     const updateInfo = () => {
-      const pc = interpreter.get_pc();
+      const pc = this.interpreter.get_pc();
 
       const className = "current-addr";
       const oldAddr = document.querySelector(`.${className}`);
@@ -136,10 +146,10 @@ const Chip8 = {
       if (!this.paused) {
         let redraw = false;
         for (let i = 0; i < this.speed; i++) {
-          interpreter.update_keypad(makeKeypad(this.keysPressed));
-          interpreter.step();
+          this.interpreter.update_keypad(makeKeypad(this.keysPressed));
+          this.interpreter.step();
 
-          if (interpreter.should_redraw()) {
+          if (this.interpreter.should_redraw()) {
             redraw = true;
           }
         }
@@ -149,14 +159,14 @@ const Chip8 = {
         }
 
         if (!this.muted) {
-          if (interpreter.should_beep()) {
+          if (this.interpreter.should_beep()) {
             this.audio.start();
           } else {
             this.audio.stop();
           }
         }
 
-        interpreter.update_timers();
+        this.interpreter.update_timers();
 
         updateInfo();
       }
