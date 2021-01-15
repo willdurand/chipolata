@@ -8,5 +8,5 @@ module.exports = {
     filename: "bootstrap.js",
   },
   mode: process.env.NODE_ENV || "development",
-  plugins: [new CopyWebpackPlugin(["index.html"])],
+  plugins: [new CopyWebpackPlugin(["index.html", "styles.css"])],
 };
