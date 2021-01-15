@@ -58,4 +58,8 @@ impl JsInterpreter {
     pub fn get_v_registers_ptr(&self) -> *const u8 {
         self.interpreter.get_v_registers_ptr()
     }
+
+    pub fn reset(&mut self) {
+        self.interpreter.reset();
+    }
 }
