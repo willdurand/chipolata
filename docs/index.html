@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/terminal.css@0.7.2/dist/terminal.min.css" />
-    <link rel="stylesheet" href="./styles.css?v=2" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
   </head>
   <body class="terminal">
     <div class="container">
@@ -63,6 +63,7 @@
           <header>registers</header>
           <div class="values-1"></div>
           <div class="values-2"></div>
+          <div class="values-3"></div>
         </div>
       </div>
 
@@ -91,11 +92,36 @@ Z X C V      A 0 B F</pre>
       <footer class="footer">
         <hr>
         <p>
-          This project started as a "week-end project" by
-          <a href="https://twitter.com/couac">@couac</a>. The source code is
-          available on
-          <a href="https://github.com/willdurand/chipolata">GitHub</a> (MIT
-          license).
+          Made by <a href="https://twitter.com/couac">@couac</a> with some
+          <span class="visually-hidden">pretzel</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <title>it is a pretzel</title>
+            <path d="M8 14.5c-.77 0-7.5-.22-7.5-7.84C.5 4.16 2.08 1.5 5 1.5c1.17 0 2.13.28 2.87.84-.22.43-.6 1.17-.94 1.73a3 3 0 0 0-1.82-.57C3.4 3.5 2.5 5.3 2.5 7c0 3.08 2.1 5 5.5 5 3.24 0 5.5-2.06 5.5-5 0-1.37 0-3.21-2-3.47V1.52c3.7.28 4 3.66 4 4.73 0 6.51-4.71 8.25-7.5 8.25z" fill="#f5ce85"/>
+            <path d="M5 2c.9 0 1.63.17 2.22.5-.14.28-.3.59-.47.88A3.6 3.6 0 0 0 5.12 3C3.09 3 2 5.06 2 7c0 3.34 2.35 5.5 6 5.5 3.53 0 6-2.26 6-5.5 0-1.3 0-3.38-2-3.89V2.1c2.69.5 3 3.01 3 4.16C15 12.37 10.6 14 8 14c-1.17 0-7-.35-7-7.34C1 4.35 2.37 2 5 2m6-1v3c1.83 0 2 1.11 2 3 0 2.46-1.81 4.5-5 4.5S3 9.72 3 7c0-1.44.74-3 2.1-3 1.35 0 1.92.85 1.92.85.55-.74 1.47-2.64 1.47-2.64A4.9 4.9 0 0 0 5 1C1.86 1 0 3.75 0 6.66 0 13.37 5.05 15 8 15s8-1.9 8-8.75C16 4.16 15.05 1 11 1z" fill="#967a44"/>
+            <path d="M6.42 8.36a4.93 4.93 0 0 1-.92-2.78c0-2.43 1.86-3.93 5-4.07v2c-1.26.03-3 .3-3 2.49 0 .57.05.95.4 1.39l-1.48.97z" fill="#f5ce85"/>
+            <path d="M10 2.05v.98C8.69 3.15 7 3.67 7 6c0 .48.04.87.22 1.24l-.65.42A4.26 4.26 0 0 1 6 5.58c0-2.02 1.44-3.28 4-3.53M11 1C7 1 5 2.93 5 5.58a5.7 5.7 0 0 0 1.3 3.46l2.4-1.57C8.03 6.91 8 6.64 8 6c0-1.95 1.67-2 3-2V1z" fill="#967a44"/>
+            <path d="M9.82 2.07s1.17-.2 2.3.04v1.02s-.89-.13-2.2-.09c-.07-.23-.1-.97-.1-.97zm-5.17 8.87c-.48 0-.82-.24-1.02-.71a.86.86 0 0 1-.01-.69c.1-.24.3-.44.56-.55l.32-.11c1.2-.42 4-1.4 4-3.65a2 2 0 0 0-.2-1.03c.3-.2.75-.44 1.26-.49.27.25.94 1 .94 2.29 0 3.4-5.45 4.88-5.5 4.9-.12.02-.23.04-.35.04z" fill="#f5ce85"/>
+            <path d="M9.38 4.25c.25.3.62.87.62 1.75 0 3.01-5.08 4.4-5.13 4.4a.87.87 0 0 1-.22.04c-.27 0-.44-.12-.56-.4-.06-.16-.04-.25-.01-.3a.55.55 0 0 1 .3-.28l.29-.11C5.85 8.94 9 7.83 9 5.23c0-.34-.03-.6-.08-.81.14-.07.3-.13.46-.17m.34-1.04a3.6 3.6 0 0 0-2.11.88c.31.4.39.52.39 1.14 0 2.15-3.33 3.02-4 3.3s-1.19 1.04-.83 1.9c.32.76.94 1 1.48 1 .17 0 .32-.02.47-.05C5.48 11.28 11 9.72 11 6c0-1.9-1.28-2.8-1.28-2.8z" fill="#967a44"/>
+            <path d="M10.77 11.1a1.9 1.9 0 0 1-.63-.11l-.13-.05a6.7 6.7 0 0 1-2.2-1.22 9.35 9.35 0 0 0 1.5-1.1c.9.53 1.52.74 2.06.89.2.06.35.2.43.4.1.23.07.5-.06.73-.21.38-.64.46-.97.46z" fill="#f5ce85"/>
+            <path d="M9.37 9.23c.78.43 1.36.62 1.84.75.05.02.1.04.13.12.03.08.02.2-.03.29-.1.18-.38.2-.54.2-.16 0-.33-.02-.46-.07l-.13-.05a7.05 7.05 0 0 1-1.5-.72c.23-.16.47-.33.69-.52M9.23 8a8.48 8.48 0 0 1-2.26 1.6c1.14 1.2 2.27 1.58 2.99 1.86.22.08.5.14.81.14.53 0 1.1-.18 1.4-.72.41-.72.11-1.62-.67-1.85A7.85 7.85 0 0 1 9.23 8z" fill="#967a44"/>
+          </svg>
+          and
+          <span class="visually-hidden">coffee</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <title>it is a cup of coffee (to go)</title>
+            <path fill="#a6714e" d="M3.58 2.5l.76-2h7.31l.77 2z"/>
+            <path d="M11.31 1l.38 1H4.31l.38-1h6.62M12 0H4L2.86 3h10.28L12 0z" fill="#7a4f34"/>
+            <path fill="#f5ce85" d="M3.66 15.5l-1.11-12h10.9l-1.1 12z"/>
+            <path d="M12.9 4l-1 11H4.1l-1-11h9.8M14 3H2l1.2 13h9.6L14 3z" fill="#967a44"/>
+            <path d="M1.5 4.5V4c0-.83.67-1.5 1.5-1.5h10c.83 0 1.5.67 1.5 1.5v.5h-13z" fill="#a6714e"/>
+            <path d="M13 2v1a1 1 0 0 1 1 1H2a1 1 0 0 1 1-1h10V2m0 0H3a2 2 0 0 0-2 2v1h14V4a2 2 0 0 0-2-2z" fill="#7a4f34"/>
+            <path fill="#bae0bd" d="M3.38 12.5l-.46-5h10.16l-.46 5z"/>
+            <path d="M12.53 8l-.36 4H3.84l-.37-4h9.06m1.1-1H2.37l.55 6h10.16l.55-6z" fill="#5e9c76"/>
+            <circle cx="8" cy="10" r="1.5" fill="#ffeea3"/>
+            <path d="M8 9a1 1 0 1 1 0 2 1 1 0 0 1 0-2m0-1a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" fill="#ba9b48"/>
+          </svg>
+          – The source code is available on <a href="https://github.com/willdurand/chipolata">GitHub</a>
+          (MIT license).
         </p>
       </footer>
     </div>
