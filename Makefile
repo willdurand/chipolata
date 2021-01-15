@@ -19,7 +19,6 @@ release-web: WASM_PACK_OPTS = --release
 release-web: setup-web build-wasm-bindings
 	rm -rf docs/*.wasm docs/*.js
 	cd web && NODE_ENV=production npm run build
-	cp web/styles.css docs/
 .PHONY: release-web
 
 dev: ## run the dev commands to work on the web app
