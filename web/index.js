@@ -13,6 +13,7 @@ const Chip8 = {
   // TODO: make it configurable.
   speed: 9,
   paused: false,
+  muted: false,
 
   display: null,
   audio: null,
@@ -20,6 +21,7 @@ const Chip8 = {
   keysPressed: {},
 
   $pauseBtn: null,
+  $muteBtn: null,
 
   init(_document, _screen) {
     // TODO: add controls to change display dimensions
@@ -35,14 +37,17 @@ const Chip8 = {
     this.audio = createAudio();
 
     this.$pauseBtn = _document.querySelector("#btn-pause");
+    this.$muteBtn = _document.querySelector("#btn-mute");
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onPauseClick = this.onPauseClick.bind(this);
+    this.onMuteClick = this.onMuteClick.bind(this);
 
     _document.addEventListener("keydown", this.onKeyDown);
     _document.addEventListener("keyup", this.onKeyUp);
     this.$pauseBtn.addEventListener("click", this.onPauseClick);
+    this.$muteBtn.addEventListener("click", this.onMuteClick);
   },
 
   onKeyDown(event) {
@@ -57,6 +62,12 @@ const Chip8 = {
     this.$pauseBtn.classList.toggle("btn-ghost");
     this.$pauseBtn.textContent = this.paused ? "stop" : "start";
     this.paused = !this.paused;
+  },
+
+  onMuteClick() {
+    this.$muteBtn.classList.toggle("btn-ghost");
+    this.$muteBtn.textContent = this.muted ? "mute" : "unmute";
+    this.muted = !this.muted;
   },
 
   run(rom) {
@@ -136,10 +147,12 @@ const Chip8 = {
           this.display.draw(vram);
         }
 
-        if (interpreter.should_beep()) {
-          this.audio.start();
-        } else {
-          this.audio.stop();
+        if (!this.muted) {
+          if (interpreter.should_beep()) {
+            this.audio.start();
+          } else {
+            this.audio.stop();
+          }
         }
 
         interpreter.update_timers();
