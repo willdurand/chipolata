@@ -9,10 +9,11 @@
   grid-template-rows: auto;
   grid-template-areas:
     "header header header"
-    "main main help"
-    "controls controls help"
-    "game-info game-info help"
-    "registers registers opcode"
+    "main main controls"
+    "main main opcode"
+    "game-info game-info opcode"
+    "help help registers"
+    "help help registers"
     "footer footer footer";
 }
 
@@ -32,6 +33,7 @@
 
 .game-info {
   grid-area: game-info;
+  text-align: justify;
 }
 
 .opcode {
@@ -84,12 +86,13 @@
   grid-area: controls;
 }
 
-.controls > div {
-  text-align: center;
+.controls button {
+  margin-bottom: 5px;
 }
 
 .help {
   grid-area: help;
+  text-align: justify;
 }
 
 .help .keymap {
