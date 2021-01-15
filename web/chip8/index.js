@@ -15,7 +15,7 @@ const Chip8 = {
   // TODO: make it configurable.
   speed: 9,
   paused: false,
-  muted: false,
+  muted: true,
   keysPressed: {},
 
   display: null,
