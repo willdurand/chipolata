@@ -9,6 +9,8 @@ console debugger too.
 
 ![](./docs/screenshot-readme.png)
 
+![](./docs/screenshot-webapp-readme.png)
+
 ## Usage
 
 ### Desktop
