@@ -11,24 +11,26 @@ const Chip8 = {
   // TODO: retrieve these values via the interpreter instance.
   WIDTH: 64,
   HEIGHT: 32,
+
   // TODO: make it configurable.
   speed: 9,
   paused: false,
   muted: false,
+  keysPressed: {},
 
   display: null,
   audio: null,
 
-  keysPressed: {},
-
   $pauseBtn: null,
   $muteBtn: null,
   $resetBtn: null,
+  $registers1: null,
+  $registers2: null,
 
   interpreter: null,
+  v_registers: null,
 
   init(_document, _screen) {
-    // TODO: add controls to change display dimensions
     this.display = createDisplay(
       _document.getElementById("display-canvas"),
       this.WIDTH,
@@ -37,12 +39,13 @@ const Chip8 = {
       _screen.height
     );
 
-    // TODO: add controls to mute sound
     this.audio = createAudio();
 
     this.$pauseBtn = _document.querySelector("#btn-pause");
     this.$muteBtn = _document.querySelector("#btn-mute");
     this.$resetBtn = _document.querySelector("#btn-reset");
+    this.$registers1 = _document.querySelector(".registers .values-1");
+    this.$registers2 = _document.querySelector(".registers .values-2");
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
@@ -81,8 +84,47 @@ const Chip8 = {
     this.interpreter.reset();
   },
 
+  updateInfo() {
+    const pc = this.interpreter.get_pc();
+
+    const className = "current-addr";
+    const oldAddr = document.querySelector(`.${className}`);
+    oldAddr && oldAddr.classList.toggle(className);
+
+    const newAddr = document.querySelector(`.addr-${pc}`);
+    if (newAddr) {
+      newAddr.classList.toggle(className);
+      newAddr.parentElement.scrollTo(
+        0,
+        newAddr.offsetTop - newAddr.parentElement.offsetTop - 70
+      );
+    }
+
+    const values1 = [];
+    const values2 = [];
+    for (let i = 0; i < 8; i++) {
+      values1.push(
+        `v${String(i).padStart(2, "0")}=${hexformat(this.v_registers[i], 2)}`
+      );
+      values2.push(
+        `v${String(i + 8).padStart(2, "0")}=${hexformat(
+          this.v_registers[i + 8],
+          2
+        )}`
+      );
+    }
+
+    this.$registers1.innerHTML = values1.join("<br>");
+    this.$registers2.innerHTML = values2.join("<br>");
+  },
+
   run(rom) {
     this.interpreter = new libchipolata.JsInterpreter(rom);
+    this.v_registers = new Uint8Array(
+      memory.buffer,
+      this.interpreter.get_v_registers_ptr(),
+      16
+    );
 
     const vram = new Uint8Array(
       memory.buffer,
@@ -98,49 +140,6 @@ const Chip8 = {
 
     const $opcode = document.querySelector(".opcode .values");
     $opcode.innerHTML = disassemble(ram);
-
-    const v_registers = new Uint8Array(
-      memory.buffer,
-      this.interpreter.get_v_registers_ptr(),
-      16
-    );
-
-    const $registers1 = document.querySelector(".registers .values-1");
-    const $registers2 = document.querySelector(".registers .values-2");
-
-    const updateInfo = () => {
-      const pc = this.interpreter.get_pc();
-
-      const className = "current-addr";
-      const oldAddr = document.querySelector(`.${className}`);
-      oldAddr && oldAddr.classList.toggle(className);
-
-      const newAddr = document.querySelector(`.addr-${pc}`);
-      if (newAddr) {
-        newAddr.classList.toggle(className);
-        newAddr.parentElement.scrollTo(
-          0,
-          newAddr.offsetTop - newAddr.parentElement.offsetTop - 70
-        );
-      }
-
-      const values1 = [];
-      const values2 = [];
-      for (let i = 0; i < 8; i++) {
-        values1.push(
-          `v${String(i).padStart(2, "0")}=${hexformat(v_registers[i], 2)}`
-        );
-        values2.push(
-          `v${String(i + 8).padStart(2, "0")}=${hexformat(
-            v_registers[i + 8],
-            2
-          )}`
-        );
-      }
-
-      $registers1.innerHTML = values1.join("<br>");
-      $registers2.innerHTML = values2.join("<br>");
-    };
 
     const renderLoop = () => {
       if (!this.paused) {
@@ -168,7 +167,7 @@ const Chip8 = {
 
         this.interpreter.update_timers();
 
-        updateInfo();
+        this.updateInfo();
       }
 
       requestAnimationFrame(renderLoop);
