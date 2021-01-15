@@ -113,6 +113,16 @@
 
 .footer {
   grid-area: footer;
+  text-align: center;
+}
+
+.footer svg {
+  height: 0.9rem;
+  margin-bottom: -3px;
+}
+
+.visually-hidden {
+  display: none;
 }
 
 @media only screen and (max-width: 1000px) {
