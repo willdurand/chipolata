@@ -109,14 +109,14 @@ fn main() {
             }
         }
 
-        if (args.debug && interpreter.cpu.get_pc() == 0x200)
-            || address_breakpoints.contains(&interpreter.cpu.get_pc())
+        if (args.debug && interpreter.get_pc() == 0x200)
+            || address_breakpoints.contains(&interpreter.get_pc())
             || opcode_breakpoints.contains(&interpreter.cpu.fetch_instruction())
             || window.is_key_down(Key::O)
         {
             stepping = true;
             interpreter.cpu.enable_debug();
-            println!("Breakpoint hit at 0x{:04X}", interpreter.cpu.get_pc());
+            println!("Breakpoint hit at 0x{:04X}", interpreter.get_pc());
         }
 
         if stepping {

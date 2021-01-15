@@ -52,11 +52,27 @@ impl JsInterpreter {
     }
 
     pub fn get_pc(&self) -> u16 {
-        self.interpreter.cpu.get_pc()
+        self.interpreter.get_pc()
     }
 
-    pub fn get_v_registers_ptr(&self) -> *const u8 {
-        self.interpreter.get_v_registers_ptr()
+    pub fn get_v_ptr(&self) -> *const u8 {
+        self.interpreter.get_v_ptr()
+    }
+
+    pub fn get_i(&self) -> u16 {
+        self.interpreter.get_i()
+    }
+
+    pub fn get_sp(&self) -> u8 {
+        self.interpreter.get_sp()
+    }
+
+    pub fn get_dt(&self) -> u8 {
+        self.interpreter.get_delay()
+    }
+
+    pub fn get_st(&self) -> u8 {
+        self.interpreter.get_sound()
     }
 
     pub fn reset(&mut self) {

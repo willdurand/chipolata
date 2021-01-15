@@ -13,11 +13,16 @@ pub struct Registers {
     // flag. In the draw instruction VF is set upon pixel collision.
     pub v: [u8; 16],
     // Index register
-    i: usize,
+    pub i: usize,
     // Program counter
-    pc: usize,
+    pub pc: usize,
     // Stack pointer
-    sp: usize,
+    pub sp: usize,
+    // This timer is intended to be used for timing the events of games. Its value can be set and
+    // read.
+    pub delay: u8,
+    // This timer is used for sound effects. When its value is nonzero, a beeping sound is made.
+    pub sound: u8,
 }
 
 impl fmt::Debug for Registers {
@@ -27,6 +32,7 @@ impl fmt::Debug for Registers {
             "  v0={:02X} v1={:02X} v2={:02X} v3={:02X} v4={:02X} v5={:02X} v6={:02X} v7={:02X}\
             \n  v8={:02X} v9={:02X} va={:02X} vb={:02X} vc={:02X} vd={:02X} ve={:02X} vf={:02X}\
             \n  i={:04X} pc={:04X} sp={:04X}\
+            \n  delay={:02X} sound={:02X}\
             \n",
             self.v[0],
             self.v[1],
@@ -47,21 +53,9 @@ impl fmt::Debug for Registers {
             self.i,
             self.pc,
             self.sp,
+            self.delay,
+            self.sound
         )
-    }
-}
-#[derive(Default)]
-struct Timers {
-    // This timer is intended to be used for timing the events of games. Its value can be set and
-    // read.
-    delay: u8,
-    // This timer is used for sound effects. When its value is nonzero, a beeping sound is made.
-    sound: u8,
-}
-
-impl fmt::Debug for Timers {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "  delay={:02X} sound={:02X}\n", self.delay, self.sound)
     }
 }
 
@@ -114,7 +108,6 @@ pub struct CPU {
     vram_changed: bool,
 
     pub registers: Registers,
-    timers: Timers,
     // The stack is only used to store return addresses when subroutines are called.
     stack: [u16; 16],
     keypad: Keypad,
@@ -130,7 +123,6 @@ impl CPU {
             vram: [0; HEIGHT * WIDTH],
             vram_changed: false,
             registers: Registers::default(),
-            timers: Timers::default(),
             stack: [0; 16],
             keypad: Keypad::default(),
             rng: rand::thread_rng(),
@@ -182,17 +174,13 @@ impl CPU {
     }
 
     pub fn update_timers(&mut self) {
-        if self.timers.delay > 0 {
-            self.timers.delay -= 1;
+        if self.registers.delay > 0 {
+            self.registers.delay -= 1;
         }
 
-        if self.timers.sound > 0 {
-            self.timers.sound -= 1;
+        if self.registers.sound > 0 {
+            self.registers.sound -= 1;
         }
-    }
-
-    pub fn get_pc(&self) -> u16 {
-        self.registers.pc as u16
     }
 
     pub fn should_redraw(&self) -> bool {
@@ -200,7 +188,7 @@ impl CPU {
     }
 
     pub fn should_beep(&self) -> bool {
-        self.timers.sound > 0
+        self.registers.sound > 0
     }
 
     pub fn reset(&mut self) {
@@ -211,7 +199,6 @@ impl CPU {
             pc: mmu::ROM_BASE_ADDR,
             ..Registers::default()
         };
-        self.timers = Timers::default();
         self.stack = [0; 16];
         self.keypad = Keypad::default();
     }
@@ -420,7 +407,7 @@ impl CPU {
         return match (opcode & 0x00FF) as u8 {
             // Vx = get_delay()
             0x0007 => {
-                self.registers.v[x] = self.timers.delay;
+                self.registers.v[x] = self.registers.delay;
             }
             // Vx = get_key()
             0x000A => {
@@ -429,11 +416,11 @@ impl CPU {
             }
             // delay_timer(Vx)
             0x0015 => {
-                self.timers.delay = self.registers.v[x];
+                self.registers.delay = self.registers.v[x];
             }
             // sound_timer(Vx)
             0x0018 => {
-                self.timers.sound = self.registers.v[x];
+                self.registers.sound = self.registers.v[x];
             }
             // I += Vx
             0x001E => {
@@ -485,9 +472,8 @@ impl fmt::Debug for CPU {
         write!(
             f,
             "Registers:\n{:?}\
-            Timers:\n{:?}\
             Keypad:\n{:?}",
-            self.registers, self.timers, self.keypad
+            self.registers, self.keypad
         )
     }
 }

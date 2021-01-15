@@ -61,7 +61,27 @@ impl Interpreter {
         self.cpu.load_rom(rom);
     }
 
-    pub fn get_v_registers_ptr(&self) -> *const u8 {
+    pub fn get_v_ptr(&self) -> *const u8 {
         self.cpu.registers.v.as_ptr()
+    }
+
+    pub fn get_pc(&self) -> u16 {
+        self.cpu.registers.pc as u16
+    }
+
+    pub fn get_i(&self) -> u16 {
+        self.cpu.registers.i as u16
+    }
+
+    pub fn get_sp(&self) -> u8 {
+        self.cpu.registers.sp as u8
+    }
+
+    pub fn get_delay(&self) -> u8 {
+        self.cpu.registers.delay
+    }
+
+    pub fn get_sound(&self) -> u8 {
+        self.cpu.registers.sound
     }
 }

@@ -26,6 +26,7 @@ const Chip8 = {
   $resetBtn: null,
   $registers1: null,
   $registers2: null,
+  $registers3: null,
 
   interpreter: null,
   v_registers: null,
@@ -46,6 +47,7 @@ const Chip8 = {
     this.$resetBtn = _document.querySelector("#btn-reset");
     this.$registers1 = _document.querySelector(".registers .values-1");
     this.$registers2 = _document.querySelector(".registers .values-2");
+    this.$registers3 = _document.querySelector(".registers .values-3");
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
@@ -86,6 +88,8 @@ const Chip8 = {
 
   updateInfo() {
     const pc = this.interpreter.get_pc();
+    const i = this.interpreter.get_i();
+    const sp = this.interpreter.get_sp();
 
     const className = "current-addr";
     const oldAddr = document.querySelector(`.${className}`);
@@ -100,8 +104,9 @@ const Chip8 = {
       );
     }
 
-    const values1 = [];
-    const values2 = [];
+    const values1 = [`&nbsp;DT=${hexformat(this.interpreter.get_dt(), 2)}`];
+    const values2 = [`&nbsp;ST=${hexformat(this.interpreter.get_st(), 2)}`];
+
     for (let i = 0; i < 8; i++) {
       values1.push(
         `v${String(i).padStart(2, "0")}=${hexformat(this.v_registers[i], 2)}`
@@ -114,15 +119,20 @@ const Chip8 = {
       );
     }
 
-    this.$registers1.innerHTML = values1.join("<br>");
-    this.$registers2.innerHTML = values2.join("<br>");
+    this.$registers1.innerHTML = [
+      `PC=${hexformat(pc, 4)}`,
+      `I=${hexformat(i, 4)}`,
+      `SP=${hexformat(sp, 2)}`,
+    ].join(" ");
+    this.$registers2.innerHTML = values1.join("<br>");
+    this.$registers3.innerHTML = values2.join("<br>");
   },
 
   run(rom) {
     this.interpreter = new libchipolata.JsInterpreter(rom);
     this.v_registers = new Uint8Array(
       memory.buffer,
-      this.interpreter.get_v_registers_ptr(),
+      this.interpreter.get_v_ptr(),
       16
     );
 
