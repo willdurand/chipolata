@@ -18,7 +18,7 @@ required-features = ["cli"]
 cli = ["structopt", "minifb", "rodio"]
 
 [dependencies]
-rand = "0.8.1"
+rand = "0.9.3"
 # CLI
 structopt = { version = "0.3.13", optional = true }
 minifb = { version = "0.19.1", optional = true }
