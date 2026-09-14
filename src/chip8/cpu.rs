@@ -64,6 +64,8 @@ struct Keypad {
     pub state: [bool; 16],
     pub waiting: bool,
     pub register: usize,
+    // The key seen going down while waiting; the wait ends when it comes back up.
+    pub pending: Option<usize>,
 }
 
 impl fmt::Debug for Keypad {
@@ -149,13 +151,15 @@ impl CPU {
         self.keypad.state = keypad;
 
         if self.keypad.waiting {
-            for i in 0..=15 {
-                if self.keypad.state[i] {
+            // The PC already points past the FX0A, so there is nothing to advance here.
+            match self.keypad.pending {
+                None => self.keypad.pending = (0..16).find(|&i| self.keypad.state[i]),
+                Some(i) if !self.keypad.state[i] => {
                     self.keypad.waiting = false;
+                    self.keypad.pending = None;
                     self.registers.v[self.keypad.register] = i as u8;
-                    self.registers.pc += 2;
-                    break;
                 }
+                Some(_) => {}
             }
         } else {
             let opcode = self.fetch_instruction();
@@ -355,31 +359,29 @@ impl CPU {
             }
             // Vx -= Vy
             5 => {
-                self.registers.v[0xF] = if self.registers.v[x] > self.registers.v[y] {
-                    1
-                } else {
-                    0
-                };
+                // VF is 1 when there is no borrow, which includes Vx == Vy.
+                // The flag is written last in case Vx is VF.
+                let no_borrow = if self.registers.v[x] >= self.registers.v[y] { 1 } else { 0 };
                 self.registers.v[x] = self.registers.v[x].wrapping_sub(self.registers.v[y]);
+                self.registers.v[0xF] = no_borrow;
             }
             // Vx = Vx >> 1
             6 => {
-                self.registers.v[0xF] = self.registers.v[x] & 1;
+                let lsb = self.registers.v[x] & 1;
                 self.registers.v[x] >>= 1;
+                self.registers.v[0xF] = lsb;
             }
             // Vx = Vy - Vx
             7 => {
-                self.registers.v[0xF] = if self.registers.v[x] > self.registers.v[y] {
-                    0
-                } else {
-                    1
-                };
+                let no_borrow = if self.registers.v[y] >= self.registers.v[x] { 1 } else { 0 };
                 self.registers.v[x] = self.registers.v[y].wrapping_sub(self.registers.v[x]);
+                self.registers.v[0xF] = no_borrow;
             }
             // Vx = Vx << 1
             0xE => {
-                self.registers.v[0xF] = (self.registers.v[x] >> 7) & 1;
+                let msb = (self.registers.v[x] >> 7) & 1;
                 self.registers.v[x] <<= 1;
+                self.registers.v[0xF] = msb;
             }
             _ => self.unsupported_opcode(opcode),
         };
@@ -475,5 +477,52 @@ impl fmt::Debug for CPU {
             Keypad:\n{:?}",
             self.registers, self.keypad
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn cpu_with(program: &[u8]) -> CPU {
+        CPU::new(mmu::MMU::new(program.to_vec()))
+    }
+
+    #[test]
+    fn sub_of_equal_values_sets_vf() {
+        // v0 := 5; v1 := 5; v0 -= v1
+        let mut cpu = cpu_with(&[0x60, 0x05, 0x61, 0x05, 0x80, 0x15]);
+        for _ in 0..3 {
+            cpu.step([false; 16]);
+        }
+        assert_eq!(cpu.registers.v[0], 0);
+        assert_eq!(cpu.registers.v[0xF], 1);
+    }
+
+    #[test]
+    fn flag_survives_when_vx_is_vf() {
+        // vF := 0x81; vF <<= 1 (8FFE): the flag, 1, must win over the result, 2
+        let mut cpu = cpu_with(&[0x6F, 0x81, 0x8F, 0xFE]);
+        for _ in 0..2 {
+            cpu.step([false; 16]);
+        }
+        assert_eq!(cpu.registers.v[0xF], 1);
+    }
+
+    #[test]
+    fn key_wait_ends_on_release_and_skips_nothing() {
+        // v0 := key; v1 := 7
+        let mut cpu = cpu_with(&[0xF0, 0x0A, 0x61, 0x07]);
+        let mut keys = [false; 16];
+        cpu.step(keys);
+        keys[5] = true;
+        cpu.step(keys);
+        assert!(cpu.keypad.waiting, "a key going down is not enough");
+        keys[5] = false;
+        cpu.step(keys);
+        assert!(!cpu.keypad.waiting);
+        assert_eq!(cpu.registers.v[0], 5);
+        cpu.step(keys);
+        assert_eq!(cpu.registers.v[1], 7, "the instruction after FX0A must run");
     }
 }
